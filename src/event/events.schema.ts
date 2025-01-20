@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { EventCategory, EventTags } from 'src/common/enums';
 
 @Schema({ timestamps: true })
@@ -23,19 +23,19 @@ export class Event extends Document {
   tags: EventTags[];
 
   @Prop({
-    type: MongooseSchema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: 'User',
     required: true,
   })
-  organizer: MongooseSchema.Types.ObjectId;
+  organizer: mongoose.Types.ObjectId;
 
   @Prop({
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [mongoose.Types.ObjectId],
     ref: 'User',
     required: true,
     default: [],
   })
-  attendees: mongoose.Schema.Types.ObjectId[];
+  attendees: mongoose.Types.ObjectId[];
 
   @Prop()
   createdAt: Date;

@@ -36,6 +36,7 @@ export class UserService {
    */
   public async register(user: RegisterUserDTO): Promise<SafeUser> {
     const { firstName, lastName, password, nuid, role, email } = user;
+    console.log('🚀 ~ UserService ~ register ~ user:', user);
 
     const hashedPwd = await this.hashPassword(password);
 
@@ -48,11 +49,13 @@ export class UserService {
       approved: role === Role.USER ? true : false,
       email,
     });
+    console.log('🚀 ~ UserService ~ register ~ createdUser:', createdUser);
 
     const jwtPayload: JwtPayload = {
       firstName: createdUser.firstName,
       lastName: createdUser.lastName,
-      sub: createdUser.email,
+      email: createdUser.email,
+      sub: createdUser._id as string,
       role: createdUser.role,
       createdAt: createdUser.createdAt,
       updatedAt: createdUser.updatedAt,
@@ -60,6 +63,7 @@ export class UserService {
     const token = JwtUtil.generateToken(jwtPayload);
 
     return {
+      id: createdUser._id as string,
       firstName: createdUser.firstName,
       lastName: createdUser.lastName,
       email: createdUser.email,
@@ -97,13 +101,15 @@ export class UserService {
       role: loggedInUser.role,
       firstName: loggedInUser.firstName,
       lastName: loggedInUser.lastName,
-      sub: loggedInUser.email,
+      email: loggedInUser.email,
+      sub: loggedInUser._id as string,
       createdAt: loggedInUser.createdAt,
       updatedAt: loggedInUser.updatedAt,
     };
 
     const token = JwtUtil.generateToken(jwtPayload);
     return {
+      id: loggedInUser._id as string,
       nuid: loggedInUser.nuid,
       email: loggedInUser.email,
       firstName: loggedInUser.firstName,

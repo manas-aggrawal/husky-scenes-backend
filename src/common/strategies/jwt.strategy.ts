@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JWT_SECRET } from '../constants/app.constants';
+import { JwtPayload } from 'src/utility/utility.types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -13,10 +14,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: JwtPayload) {
     // The `payload` will contain the decoded token data
     return {
-      email: payload.sub,
+      id: payload.sub,
+      email: payload.email,
       firstName: payload.firstName,
       lastName: payload.lastName,
       role: payload.role,
