@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { EventDTO } from './dto/create-event.dto';
 import { RequestUser } from 'src/user/types/user.type';
 import { EventResponse } from './types/event.type';
@@ -26,7 +26,9 @@ export class EventsService {
     event: EventDTO,
     user: RequestUser,
   ): Promise<EventResponse> {
-    const organizer = await this.userModel.findOne({ email: user?.email });
+    console.log('🚀 ~ EventsService ~ user:', user);
+    const organizer = await this.userModel.findOne({ _id: user?.id });
+    console.log('🚀 ~ EventsService ~ organizer:', organizer);
     const createdEvent: Event = await this.eventModel.create({
       name: event.name,
       description: event.description,
@@ -34,7 +36,7 @@ export class EventsService {
       date: event.date,
       tags: event.tags,
       location: event.location,
-      organizer: organizer?._id ?? '',
+      organizer: user.id,
     });
 
     return {
@@ -45,7 +47,7 @@ export class EventsService {
       date: createdEvent.date,
       location: createdEvent.location,
       category: createdEvent.category,
-      organizer: user.email,
+      organizer,
     };
   }
 
@@ -56,9 +58,7 @@ export class EventsService {
    */
   public async fetchEvents(user: RequestUser, query: FetchEventsQueryDTO) {
     const { search, tags } = query;
-    const userId: Pick<User, '_id'> = await this.userModel
-      .findOne({ email: user.email })
-      .select('_id');
+    const userId = user?.id;
 
     const eventsQuery: any = {};
     if (search) {
@@ -72,7 +72,7 @@ export class EventsService {
       .select(
         '_id name description category date location organizer attendees tags',
       )
-      .populate('organizer', '_id firstName lastName nuid email role')
+      .populate('organizer', 'id firstName lastName nuid email role')
       .exec();
 
     return events.map((e) => ({
@@ -85,11 +85,38 @@ export class EventsService {
       attendees: e.attendees,
       date: e.date,
       organizer: e.organizer,
-      attending: e.attendees.includes(userId._id as ObjectId),
+      attending: e.attendees.includes(new mongoose.Types.ObjectId(userId)),
     }));
   }
 
-  public async eventDetail(user: RequestUser, query: EventDetailsDTO) {
-    const { id } = query;
+  /**
+   * Method to fetch event details
+   * @param user - User object in request
+   * @param query - it contains event id
+   * @returns Event
+   */
+  public async eventDetail(user: RequestUser, param: EventDetailsDTO) {
+    const { id } = param;
+    const event = await this.eventModel
+      .findOne({
+        _id: id,
+      })
+      .select(
+        '_id name description location category tags date organizer attendees',
+      )
+      .populate('organizer', 'id firstName lastName nuid email role')
+      .exec();
+
+    return {
+      id: event._id,
+      name: event.name,
+      description: event.description,
+      category: event.category,
+      location: event.location,
+      date: event.date,
+      organizer: event.organizer,
+      attendees: event.attendees,
+      attending: event.attendees.includes(new mongoose.Types.ObjectId(user.id)),
+    };
   }
 }

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -39,12 +40,12 @@ export class EventsController {
     return this.eventsService.fetchEvents(req.user, query);
   }
 
-  @Get()
+  @Get('/:id/detail')
   @Roles(Role.COMMUNITY, Role.ADMIN, Role.USER)
   public async eventDetail(
     @Req() req: { user: RequestUser },
-    @Query() query: EventDetailsDTO,
+    @Param() param: EventDetailsDTO,
   ) {
-    return this.eventsService.eventDetail(req.user, query);
+    return this.eventsService.eventDetail(req.user, param);
   }
 }
