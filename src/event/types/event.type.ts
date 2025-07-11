@@ -1,8 +1,8 @@
 import { EventTags } from 'src/common/enums';
-import { User } from 'src/user/user.schema';
+import { User } from 'src/user/schema/user.schema';
 
 export type EventResponse = {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   date: Date;
@@ -10,4 +10,6 @@ export type EventResponse = {
   category: string;
   organizer: User;
   tags: EventTags[];
+  maxCapacity: number;
+  seatsLeft: number;
 };

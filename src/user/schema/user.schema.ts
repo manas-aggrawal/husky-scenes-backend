@@ -30,6 +30,11 @@ export class User extends Document {
 
   @Prop()
   updatedAt: Date;
+
+  // Define the method directly in the class
+  getInitials(): string {
+    return `${this.firstName.charAt(0)}${this.lastName.charAt(0)}`.toUpperCase();
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

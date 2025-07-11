@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsArray, IsDate, IsEnum, IsString } from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import { EventCategory, EventTags } from 'src/common/enums';
 
 export class EventDTO {
@@ -15,6 +15,13 @@ export class EventDTO {
   @Transform(({ value }) => new Date(value))
   @IsDate()
   date: Date;
+
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  rsvpDeadline: Date;
+
+  @IsNumber()
+  maxCapacity: number;
 
   @IsString()
   location: string;

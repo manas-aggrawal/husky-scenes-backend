@@ -37,6 +37,21 @@ export class Event extends Document {
   })
   attendees: mongoose.Types.ObjectId[];
 
+  @Prop({
+    required: true,
+  })
+  rsvpDeadline: Date;
+
+  @Prop({
+    required: true,
+  })
+  maxCapacity: number;
+
+  @Prop({
+    required: true,
+  })
+  seatsLeft: number;
+
   @Prop()
   createdAt: Date;
 

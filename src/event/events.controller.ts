@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -40,12 +41,21 @@ export class EventsController {
     return this.eventsService.fetchEvents(req.user, query);
   }
 
-  @Get('/:id/detail')
+  @Get('/:eventId/detail')
   @Roles(Role.COMMUNITY, Role.ADMIN, Role.USER)
   public async eventDetail(
     @Req() req: { user: RequestUser },
     @Param() param: EventDetailsDTO,
   ) {
     return this.eventsService.eventDetail(req.user, param);
+  }
+
+  @Put('/:eventId/rsvp')
+  @Roles(Role.USER)
+  public async registerForEvent(
+    @Req() req: { user: RequestUser },
+    @Param() param: EventDetailsDTO,
+  ) {
+    return this.eventsService.registerForEvent(req.user, param);
   }
 }

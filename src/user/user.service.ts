@@ -6,7 +6,7 @@ import {
 import { RegisterUserDTO } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './user.schema';
+import { User } from './schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { SALT_ROUNDS } from 'src/common/constants/app.constants';
 import { SafeUser } from './types/user.type';
@@ -46,7 +46,7 @@ export class UserService {
       password: hashedPwd,
       nuid,
       role,
-      approved: role === Role.USER ? true : false,
+      approved: role === Role.COMMUNITY ? false : true,
       email,
     });
     console.log('🚀 ~ UserService ~ register ~ createdUser:', createdUser);
@@ -63,7 +63,7 @@ export class UserService {
     const token = JwtUtil.generateToken(jwtPayload);
 
     return {
-      id: createdUser._id as string,
+      _id: createdUser._id as string,
       firstName: createdUser.firstName,
       lastName: createdUser.lastName,
       email: createdUser.email,
@@ -109,7 +109,7 @@ export class UserService {
 
     const token = JwtUtil.generateToken(jwtPayload);
     return {
-      id: loggedInUser._id as string,
+      _id: loggedInUser._id as string,
       nuid: loggedInUser.nuid,
       email: loggedInUser.email,
       firstName: loggedInUser.firstName,

@@ -1,7 +1,7 @@
 import { Role } from 'src/common/enums';
 
 export type RequestUser = {
-  id: string;
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;
