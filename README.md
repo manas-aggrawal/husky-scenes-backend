@@ -24,7 +24,11 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+An event management platform for Northeastern Unviersity's potential 5000+ user base.
+1) Role-Based Access Control for different permissions granted to different users.
+2) JWT authentication.
+3) MongoDB Database for scale.
+4) Latest Nodejs framework, NestJS, for scale, robust, fast and secure development.
 
 ## Project setup
 
